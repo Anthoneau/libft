@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: agoldber <agoldber@student.s19.be>         +#+  +:+       +#+         #
+#    By: agoldber < agoldber@student.s19.be >       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/27 09:39:13 by agoldber          #+#    #+#              #
-#    Updated: 2024/10/18 12:43:48 by agoldber         ###   ########.fr        #
+#    Updated: 2025/05/19 17:06:03 by agoldber         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ COLOR_END	=	\033[0m
 #SOURCES
 
 FTIS_DIR	=	ft_is/
-FTIS		=	ft_isalnum ft_isalpha ft_isascii ft_isdigit ft_isprint ft_isspace
+FTIS		=	ft_isalnum ft_isalpha ft_isascii ft_isdigit ft_isprint ft_isspace ft_isnum
 
 FTMEM_DIR	=	ft_mem/
 FTMEM		=	ft_bzero ft_calloc ft_memchr ft_memcmp ft_memmove ft_memset
@@ -49,10 +49,6 @@ FTSTR		=	ft_split ft_strchr ft_strdup ft_striteri ft_strjoin \
 				ft_strlcat ft_strlcpy ft_strlen ft_strmapi ft_strncmp \
 				ft_strnstr ft_strrchr ft_strtrim ft_substr
 
-FTLST_DIR	=	ft_lst/
-FTLST		=	ft_lstadd_back ft_lstadd_front ft_lstclear ft_lstdelone \
-				ft_lstiter ft_lstlast ft_lstmap ft_lstnew ft_lstsize
-
 FTPRINTF_DIR=	ft_printf/
 FTPRINTF	=	display ft_printf hexa_transfo print_string
 
@@ -60,14 +56,13 @@ GNL_DIR		=	gnl/
 GNL			=	get_next_line get_next_line_utils
 
 FTADD_DIR	=	ft_add/
-FTADD		=	ft_swap free_array
+FTADD		=	ft_swap free_array ft_free
 
 SRC_FILES+=${addprefix ${FTIS_DIR},${FTIS}}
 SRC_FILES+=${addprefix ${FTMEM_DIR},${FTMEM}}
 SRC_FILES+=${addprefix ${FTPUT_DIR},${FTPUT}}
 SRC_FILES+=${addprefix ${FTTO_DIR},${FTTO}}
 SRC_FILES+=${addprefix ${FTSTR_DIR},${FTSTR}}
-SRC_FILES+=${addprefix ${FTLST_DIR},${FTLST}}
 SRC_FILES+=${addprefix ${FTPRINTF_DIR},${FTPRINTF}}
 SRC_FILES+=${addprefix ${GNL_DIR}, ${GNL}}
 SRC_FILES+=${addprefix ${FTADD_DIR}, ${FTADD}}
@@ -94,7 +89,7 @@ all:		${NAME}
 
 ${NAME}:	${OBJS}
 			@${AR} ${NAME} ${OBJS}
-			@echo "\n${BGREEN}Libft compiled!${COLOR_END}"
+			@echo -e "\n${BGREEN}Libft compiled!${COLOR_END}"
 
 COMPILED_FILES=0
 
@@ -102,10 +97,10 @@ ${OBJS_DIR}%.o : ${SRCS_DIR}%.c | ${OBJSF}
 	@mkdir -p $(dir $@)
 	@${CC} ${CFLAGS} ${INCLUDES} -c $< -o $@
 	@PROGRESS=$$(echo "$$(find ${OBJS_DIR} -type f | wc -l | tr -d ' ') * 100 / ${TOTAL_FILES}" | bc); \
-	BAR=$$(for i in `eval echo {1..$$((PROGRESS / 2))}`; do printf "▇"; done); \
-	SPACES=$$(for i in `eval echo {1..50}`; do if [ $$i -gt $$((PROGRESS / 2)) ]; then printf " "; fi; done); \
+	BAR=$$(seq -s "▇" 0 $$((PROGRESS / 2)) | tr -d '[:digit:]'); \
+	SPACES=$$(seq -s " " 0 $$((50 - PROGRESS / 2)) | tr -d '[:digit:]'); \
 	CURRENT_FILES=$$(find ${OBJS_DIR} -type f | wc -l | tr -d ' '); \
-	printf "\r${BBLUE}Compiling: [$$BAR$$SPACES] $$PROGRESS%% ($$CURRENT_FILES/${TOTAL_FILES}) files${COLOR_END}"
+	printf "\r${BBLUE}Compiling: [$$BAR$$SPACES] $$PROGRESS%% ($$CURRENT_FILES/${TOTAL_FILES})${COLOR_END}"
 
 
 ${OBJSF}:
@@ -123,11 +118,11 @@ ${OBJSF}:
 clean:
 			@${RM} ${OBJS_DIR}
 			@${RM} ${OBJSF}
-			@echo "${BCYAN}Libft .o files cleaned!${COLOR_END}"
+			@echo -e "${BCYAN}Libft .o files cleaned!${COLOR_END}"
 
 fclean:		clean
 			@${RM} ${NAME}
-			@echo "${BBLUE}Libft .a files cleaned!${COLOR_END}"
+			@echo -e "${BBLUE}Libft .a files cleaned!${COLOR_END}"
 
 re:			fclean all
 

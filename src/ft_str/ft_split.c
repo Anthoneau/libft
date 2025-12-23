@@ -6,7 +6,7 @@
 /*   By: agoldber <agoldber@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 15:29:39 by agoldber          #+#    #+#             */
-/*   Updated: 2024/10/18 12:42:27 by agoldber         ###   ########.fr       */
+/*   Updated: 2025/01/27 14:23:48 by agoldber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	count_word(char const *s, char c)
 		}
 		s++;
 	}
-	return (count + 1);
+	return (count);
 }
 
 static char	*word_split(char const *s, int *start, int *finish)
@@ -47,7 +47,10 @@ static char	*word_split(char const *s, int *start, int *finish)
 	k = *finish;
 	word = malloc((k - j + 1) * sizeof(char));
 	if (!word)
+	{
+		free(word);
 		return (NULL);
+	}
 	while (j < k)
 		word[i++] = s[j++];
 	word[i] = '\0';
@@ -74,7 +77,7 @@ char	**ft_split(char const *s, char c)
 	int		finish;
 	int		j;
 
-	arr = malloc((count_word(s, c)) * sizeof(char *));
+	arr = malloc((count_word(s, c) + 1) * sizeof(char *));
 	if (!arr)
 		return (NULL);
 	finish = 0;
